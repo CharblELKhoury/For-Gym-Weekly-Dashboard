@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>For Gym — Ad Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Calibri:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f4f2;--white:#fff;--border:#ddddd8;--borderl:#e9e9e5;
+  --text:#111;--t2:#464642;--t3:#8a8a84;
+  --green:#166f40;--gbg:#eaf5f0;--red:#b02e24;--rbg:#fdf0ef;
+  --amber:#8a5c00;--abg:#fef8e7;--blue:#1557a0;--bbg:#e8f4ff;
+  --sw:214px;--hh:58px;--r:8px;
+}
+html,body{height:100%;font-family:'Calibri',Calibri,Candara,Geneva,Tahoma,sans-serif;font-size:13.5px;color:var(--text);background:var(--bg);}
+.app{display:flex;height:100vh;overflow:hidden;}
+/* Sidebar */
+.sb{width:var(--sw);background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);}
+.sb-logo .n{font-size:14px;font-weight:700;letter-spacing:.3px;}
+.sb-logo .s{font-size:9px;color:var(--t3);margin-top:3px;letter-spacing:.7px;text-transform:uppercase;}
+.sb-sec{padding:14px 16px 5px;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);}
+.sb-it{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;font-size:13px;color:var(--t2);border-left:2.5px solid transparent;transition:all .12s;user-select:none;}
+.sb-it:hover{background:#f6f6f4;color:var(--text);}
+.sb-it.on{color:var(--text);font-weight:600;border-left-color:var(--text);background:#efeeeb;}
+.sb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sb-foot{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border);font-size:9.5px;color:var(--t3);line-height:1.8;}
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:var(--hh);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:12px;flex-shrink:0;position:relative;z-index:200;}
+.tb-ttl{font-size:14.5px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* Calendar */
+.cal-wrap{position:relative;flex-shrink:0;}
+.cal-btn{display:flex;align-items:center;gap:8px;padding:6px 13px;background:var(--white);border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-family:inherit;font-size:12.5px;color:var(--text);user-select:none;white-space:nowrap;min-width:200px;transition:border-color .12s;}
+.cal-btn:hover{border-color:#999;}
+.cal-btn .ci{font-size:13px;}
+.cal-btn .cl{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;}
+.cal-btn .ca{font-size:8px;color:var(--t3);transition:transform .15s;}
+.cal-btn .ca.up{transform:rotate(180deg);}
+.cal-dd{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:0 10px 36px rgba(0,0,0,.13);z-index:400;width:540px;max-width:calc(100vw - 24px);max-height:calc(100vh - 90px);overflow:hidden;flex-direction:column;}
+.qtag{font-weight:600;color:var(--text);}
+.qsub{color:var(--t3);font-size:11px;margin-left:4px;}
+.qas td{background:#f1f0ec;font-weight:700;color:var(--text);text-align:left !important;padding:10px 14px !important;font-size:12.5px;}
+.qwk td{background:var(--text);color:#fff;font-weight:600;text-align:left !important;padding:7px 14px !important;font-size:11.5px;letter-spacing:.4px;}
+.qleg{padding:14px 16px 16px;border-top:1px solid var(--borderl);background:#fafaf8;}
+.qlh{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.qlr{display:grid;grid-template-columns:260px 1fr;gap:12px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--borderl);}
+.qlr b{color:var(--text);font-weight:600;}.qlr span{color:var(--t2);}
+.qlp{font-size:12px;line-height:1.55;color:var(--t2);max-width:900px;}
+@media(max-width:700px){.qlr{grid-template-columns:1fr;gap:2px;}}
+.dmh,.dmr{display:grid;grid-template-columns:90px 1fr 56px 64px;gap:10px;align-items:center;}
+.dmh{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);padding:6px 0;border-bottom:1px solid var(--borderl);}
+.dmh span:nth-child(n+3),.dmr .dms,.dmr .dmv{text-align:right;}
+.dmr{padding:8px 0;border-bottom:1px solid var(--borderl);font-size:12.5px;}
+.dml{color:var(--text);font-weight:600;}
+.dmb{position:relative;height:22px;display:flex;align-items:center;}
+.dmb i{display:block;height:100%;border-radius:3px;}
+.dmb b{margin-left:8px;font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;}
+.dms,.dmv{color:var(--t2);}
+.dmsum{font-size:13px;color:var(--t2);margin:2px 0 12px;}.dmsum b{color:var(--text);}
+.qnote{font-size:11.5px;color:var(--t3);padding:9px 14px;border-top:1px solid var(--borderl);background:#fafaf8;}
+.cal-dd.open{display:flex;}
+@media(max-width:700px){.cal-dd{position:fixed;left:12px;right:12px;top:60px;width:auto;max-width:none;}}
+.cal-scroll{overflow-y:auto;flex:1;}
+.cal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));padding:14px 12px 6px;}
+.cal-col{padding:4px 10px 10px;}
+.cal-col+.cal-col{border-left:1px solid var(--borderl);}
+.cal-mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--borderl);}
+.cal-mname{font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text);}
+.cal-mbtn{font-size:9px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:var(--t2);cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
+.cal-mbtn:hover:not(:disabled){background:var(--border);}
+.cal-mbtn.msel{background:var(--text);color:#fff;border-color:var(--text);}
+.cal-mbtn:disabled{opacity:.25;cursor:default;}
+.cal-wbtn{display:block;width:100%;text-align:left;padding:5px 8px;border-radius:5px;border:1px solid transparent;background:transparent;font-family:inherit;font-size:10.5px;color:var(--t2);cursor:pointer;transition:all .12s;margin-bottom:3px;}
+.cal-wbtn:hover:not(:disabled){background:var(--bg);border-color:var(--border);}
+.cal-wbtn.wsel{background:var(--text);color:#fff;}
+.cal-wbtn:disabled{opacity:.22;cursor:default;}
+.cal-bar{border-top:1px solid var(--border);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;background:#fafaf8;flex-shrink:0;}
+.cal-sum{font-size:12px;color:var(--t2);font-weight:500;}
+.cal-clr{font-size:11.5px;color:var(--t3);cursor:pointer;border:none;background:none;font-family:inherit;padding:4px 8px;border-radius:4px;}
+.cal-clr:hover{background:var(--bg);}
+/* Tabs */
+.tabs{display:flex;gap:1px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:2px;flex-shrink:0;}
+.tab{padding:5px 13px;border-radius:4px;font-size:11.5px;cursor:pointer;color:var(--t2);white-space:nowrap;transition:all .12s;}
+.tab.on{background:var(--white);color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.content{flex:1;overflow-y:auto;padding:22px 26px;}
+/* KPIs */
+.kg{display:grid;gap:13px;margin-bottom:18px;}
+.kc{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.kl{font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.kv{font-size:26px;font-weight:700;line-height:1;letter-spacing:-.6px;}
+.kv.na{color:var(--t3);font-size:20px;}
+.ks{font-size:11px;color:var(--t3);margin-top:5px;}
+.chip{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:7px;}
+.chip.up{background:var(--gbg);color:var(--green);}
+.chip.dn{background:var(--rbg);color:var(--red);}
+.chip.neu{background:#f0f0ec;color:var(--t3);}
+/* Layout */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.sec{display:flex;align-items:center;justify-content:space-between;margin:22px 0 11px;}
+.sec h2{font-size:9px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--t3);}
+.secn{font-size:11px;color:var(--t3);}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;}
+.pttl{font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:14px;}
+/* Bars */
+.bars{display:flex;flex-direction:column;gap:9px;}
+.brow{display:flex;align-items:center;gap:10px;}
+.blbl{width:108px;font-size:12px;color:var(--t2);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
+.btrack{flex:1;height:18px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.bfill{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.bnum{width:76px;font-size:12px;font-weight:600;text-align:right;flex-shrink:0;white-space:nowrap;}
+/* Tables */
+.dt{width:100%;border-collapse:collapse;font-size:13px;}
+.dt thead th{font-size:8.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--t3);padding:9px 11px;border-bottom:1.5px solid var(--border);text-align:right;white-space:nowrap;}
+.dt thead th:first-child{text-align:left;}
+.dt thead th.thc{width:38px;padding:9px 6px;}
+.dt thead th.tha{width:150px;padding:9px 8px;text-align:left;}
+.dt tbody td{padding:9px 11px;border-bottom:1px solid var(--borderl);text-align:right;white-space:nowrap;}
+.dt tbody td:first-child{text-align:left;}
+.dt tbody tr:last-child td{border-bottom:none;}
+.dt tbody tr:hover td{background:#f8f8f6;}
+.dt tfoot td{padding:10px 11px;border-top:2px solid var(--border);font-weight:700;text-align:right;background:#f6f6f4;white-space:nowrap;}
+.dt tfoot td:first-child{text-align:left;}
+.vc{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.vdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.tup{color:var(--green);font-weight:600;}
+.tdn{color:var(--red);font-weight:600;}
+.tna{color:var(--t3);}
+/* Toggle */
+.tog{display:inline-flex;align-items:center;justify-content:center;width:26px;height:22px;border-radius:5px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:9px;color:var(--t3);transition:all .12s;user-select:none;vertical-align:middle;}
+.tog:hover{background:var(--border);}
+.tog.open{background:var(--text);color:#fff;border-color:var(--text);}
+/* Ad-set rows */
+.ads-row td{font-size:12px;color:var(--t2);padding:7px 11px 7px 28px !important;background:#fafafa;border-bottom:1px solid var(--borderl);}
+.ads-row td:not(:first-child){text-align:right;}
+.ads-row td:first-child::before{content:"↳ ";color:var(--t3);}
+/* Analysis tags */
+.anote{font-size:12px;color:var(--t2);line-height:1.5;}
+/* Monthly spend blocks */
+.spend-month-block{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:18px;}
+.spend-month-hd{padding:13px 18px;background:#f8f8f6;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.spend-month-name{font-size:12.5px;font-weight:700;}
+.spend-month-total{font-size:13px;font-weight:700;}
+.svr{display:flex;align-items:center;padding:10px 18px;border-bottom:1px solid var(--borderl);gap:12px;}
+.svr:last-child{border-bottom:none;}
+.svr:hover{background:#fafafa;}
+.svr-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.svr-name{width:118px;font-size:13px;font-weight:600;flex-shrink:0;}
+.svr-bwrap{flex:1;height:16px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.svr-bar{height:100%;border-radius:3px;}
+.svr-amt{width:78px;font-size:13px;font-weight:600;text-align:right;flex-shrink:0;}
+.svr-tog{width:34px;flex-shrink:0;text-align:right;}
+.svr-tog button{font-size:9.5px;color:var(--t3);border:1px solid var(--border);background:var(--bg);border-radius:4px;padding:2px 6px;cursor:pointer;font-family:inherit;transition:all .12s;}
+.svr-tog button.open{background:var(--text);color:#fff;border-color:var(--text);}
+.swr-wrap{background:#fafafa;border-bottom:1px solid var(--borderl);}
+.swr{display:flex;align-items:baseline;padding:6px 18px 6px 38px;gap:12px;border-bottom:1px solid var(--borderl);}
+.swr:last-child{border-bottom:none;}
+.swr-lbl{width:130px;font-size:11px;color:var(--t2);flex-shrink:0;}
+.swr-acts{flex:1;font-size:11px;color:var(--t3);}
+.swr-amt{width:78px;font-size:11.5px;font-weight:600;text-align:right;color:var(--t2);}
+/* MoM */
+.momgrid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--white);margin-bottom:18px;}
+.momcell{padding:18px 20px;}
+.momcell+.momcell{border-left:1px solid var(--border);}
+.momlbl{font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;}
+.momval{font-size:24px;font-weight:700;line-height:1;letter-spacing:-.5px;}
+.momprv{font-size:11px;color:var(--t3);margin-top:4px;}
+.momchip{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:8px;}
+.momchip.up{background:var(--gbg);color:var(--green);}
+.momchip.dn{background:var(--rbg);color:var(--red);}
+.momchip.neu{background:#f0f0ec;color:var(--t3);}
+/* Funnel */
+.funnel{display:flex;flex-direction:column;gap:7px;}
+.fnrow{display:flex;align-items:center;gap:10px;}
+.fnlbl{width:90px;font-size:12px;color:var(--t2);text-align:right;flex-shrink:0;}
+.fnbar{border-radius:4px;height:30px;display:flex;align-items:center;padding:0 13px;font-size:12.5px;font-weight:600;color:white;min-width:56px;}
+.fnval{width:66px;font-size:12.5px;font-weight:600;text-align:right;flex-shrink:0;}
+/* Branch header */
+.bhd{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.bicon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;}
+.bname{font-size:22px;font-weight:700;}
+.bpill{font-size:11px;color:var(--t2);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:10px;}
+.ndpill{font-size:11px;color:var(--t3);background:#f0f0ec;border:1px solid var(--border);padding:3px 10px;border-radius:10px;}
+/* Monthly bars */
+.mwrap{display:flex;align-items:flex-end;gap:14px;padding-top:4px;}
+.mcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;}
+.mbar{width:100%;border-radius:4px 4px 0 0;}
+.mval{font-size:12px;font-weight:600;white-space:nowrap;text-align:center;}
+.mlbl{font-size:10.5px;color:var(--t3);white-space:nowrap;text-align:center;}
+/* Misc */
+.infobox{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:13px 17px;margin-bottom:14px;font-size:12.5px;color:var(--t2);line-height:1.7;}
+.nodata{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:40px 24px;text-align:center;color:var(--t3);font-size:13.5px;}
+.footer{font-size:10px;color:var(--t3);margin-top:24px;padding-top:14px;border-top:1px solid var(--borderl);display:flex;gap:20px;flex-wrap:wrap;}
+.tabs{display:none !important;}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sb">
+  <div class="sb-logo"><div class="n">ADDMIND BEIRUT</div><div class="s">Ad Performance Report</div></div>
+  <div class="sb-sec">Venue</div>
+  <div class="sb-it on" onclick="nav('gym',this)"><span class="sb-dot" style="background:#1e8449;"></span>For Gym</div>
+  <div class="sb-it" onclick="qnav('gym',this)"><span class="sb-dot" style="background:#999;"></span>Ads Quality</div>
+  <div class="sb-it" onclick="dnav('gym',this)"><span class="sb-dot" style="background:#999;"></span>Demographics</div>
+  <div class="sb-it" onclick="anav('gym',this)"><span class="sb-dot" style="background:#999;"></span>Account Insights</div>
+  <div class="sb-foot">Addmind Beirut · Meta Ads<br/>Updated: 11 Oct 2026</div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div class="tb-ttl" id="tbt">For Gym — Performance</div>
+    <div class="cal-wrap" id="cW">
+      <div class="cal-btn" id="cB"><span class="ci">📅</span><span class="cl" id="cL">23 – 31 Mar 2026</span><span class="ca" id="cA">▼</span></div>
+      <div class="cal-dd" id="cD">
+        <div class="cal-scroll"><div class="cal-grid" id="cG"></div></div>
+        <div class="cal-bar"><button class="cal-clr" onclick="calReset()">Reset</button><span class="cal-sum" id="cS">1 week selected</span></div>
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab on" onclick="setTab('perf',this)">Performance</div>
+      <div class="tab" onclick="setTab('spend',this)">Monthly Spend</div>
+      <div class="tab" onclick="setTab('mom',this)">MoM</div>
+      <div class="tab" onclick="setTab('hist',this)">All Weeks</div>
+    </div>
+  </div>
+  <div class="content" id="cnt"></div>
+</div>
+</div>
+<script>
+const V=[{"id":"gym","name":"For Gym","c":"#1e8449"}];
+
+const WK=[{"id":"w20261005","label":"05 – 11 Oct 2026","mk":"oct","v":{"gym":{"r":2249,"re":79947,"im":101192,"cl":2339,"sp":87.8,"rt":"Profile Visits","ads":[{"n":"Generic – Oct 2026 (general)","r":1623,"re":65233,"im":81731,"cl":1719,"sp":52.57,"note":"Best Gym result this week. Generic leading reach and profile-visit volume."},{"n":"Classes – Oct 2026 (general)","r":626,"re":14714,"im":19461,"cl":620,"sp":35.23,"note":"Consistent Classes performance."}],"qa":[{"n":"Reel - 26 Aug 2026","s":"Generic – Oct 2026 (general)","q":"Above average","im":76540,"r":1569,"sp":46.7,"cl":1662},{"n":"Reel - 08 Oct 2026","s":"Generic – Oct 2026 (general)","q":"Above average","im":5191,"r":54,"sp":5.87,"cl":57},{"n":"Reel - 29 May 2026","s":"Classes – Oct 2026 (general)","q":"Above average","im":19461,"r":626,"sp":35.23,"cl":620}],"dm":{"age":[{"g":"18–24","re":35400,"im":47300},{"g":"25–34","re":29600,"im":37300},{"g":"35–44","re":9390,"im":12100},{"g":"45–54","re":3460,"im":4500},{"g":"Uncategorised","re":3,"im":3}],"gen":[{"g":"Female","re":26000,"im":33500},{"g":"Male","re":51300,"im":67000},{"g":"Uncategorised","re":428,"im":594}]},"ai":{"views":"128.0K","ig":"127,791","fb":"174","ci":"550","pv":"2.7K","fo":"97"}}}},{"id":"w20261001","label":"01 – 04 Oct 2026","mk":"oct","v":{"gym":{"r":686,"re":24956,"im":30866,"cl":686,"sp":40.66,"rt":"Profile Visits","ads":[{"n":"Generic – Oct 2026 (general)","r":355,"re":17629,"im":22076,"cl":351,"sp":22.95,"note":"Best Gym result this week. Generic leading reach and profile-visit volume."},{"n":"Classes – Oct 2026 (general)","r":331,"re":7327,"im":8790,"cl":335,"sp":17.71,"note":"Consistent Classes performance opening October."}]}}},{"id":"w20260928","label":"28 – 30 Sep 2026","mk":"sep","v":{"gym":{"r":807,"re":33318,"im":42064,"cl":795,"sp":49.12,"rt":"Profile Visits","ads":[{"n":"Generic – Sep 2026 (general)","r":478,"re":25499,"im":32089,"cl":465,"sp":31.71,"note":"Best Gym result this week. Generic leading reach and profile-visit volume."},{"n":"Classes – Sep 2026 (general)","r":329,"re":7819,"im":9975,"cl":330,"sp":17.41,"note":"Consistent Classes performance closing September."}]}}},{"id":"w20260921","label":"21 – 27 Sep 2026","mk":"sep","v":{"gym":{"r":2323,"re":79544,"im":105132,"cl":2329,"sp":129.92,"rt":"Profile Visits","ads":[{"n":"Generic – Sep 2026 (general)","r":1018,"re":43744,"im":61414,"cl":1022,"sp":67.56,"note":"Best Gym result this week. Generic leading reach and profile-visit volume."},{"n":"Classes – Sep 2026 (general)","r":883,"re":23471,"im":29830,"cl":858,"sp":47.69,"note":"Consistent Classes performance."},{"n":"PT – Sep 2026 (general)","r":422,"re":12329,"im":13888,"cl":449,"sp":14.67,"note":"Lowest spend of the set, steady profile-visit volume."}]}}},{"id":"w20260914","label":"14 – 20 Sep 2026","mk":"sep","v":{"gym":{"r":2797,"re":99293,"im":129976,"cl":2871,"sp":129.12,"rt":"Profile Visits","ads":[{"n":"PT – Sep 2026 (general)","r":1510,"re":38126,"im":47469,"cl":1571,"sp":46.9,"note":"Best Gym result this week. PT leading reach and profile-visit volume."},{"n":"Classes – Sep 2026 (general)","r":707,"re":31950,"im":43166,"cl":716,"sp":46.87,"note":"Consistent Classes performance."},{"n":"Generic – Sep 2026 (general)","r":580,"re":29217,"im":39341,"cl":584,"sp":35.35,"note":"Steady always-on generic performance."}]}}},{"id":"w20260907","label":"07 – 13 Sep 2026","mk":"sep","v":{"gym":{"r":2873,"re":92841,"im":130763,"cl":2961,"sp":131.34,"rt":"Profile Visits","ads":[{"n":"PT – Sep 2026 (general)","r":1482,"re":35270,"im":48703,"cl":1558,"sp":46.68,"note":"Best Gym result this week. PT leading reach and profile-visit volume."},{"n":"Classes – Sep 2026 (general)","r":736,"re":31465,"im":44111,"cl":740,"sp":48.66,"note":"Highest Gym spend this week. Consistent Classes performance."},{"n":"Generic – Sep 2026 (general)","r":655,"re":26106,"im":37949,"cl":663,"sp":36,"note":"Steady always-on generic performance."}]}}},{"id":"w20260901","label":"01 – 06 Sep 2026","mk":"sep","v":{"gym":{"r":2512,"re":82316,"im":109333,"cl":2558,"sp":110.89,"rt":"Profile Visits","ads":[{"n":"PT – Sep 2026 (general)","r":1356,"re":33590,"im":44354,"cl":1409,"sp":42.15,"note":"Best Gym result this week. PT leading pv volume opening September."},{"n":"Classes – Sep 2026 (general)","r":578,"re":25788,"im":34640,"cl":578,"sp":39.36,"note":"Consistent Classes performance."},{"n":"Generic – Sep 2026 (general)","r":578,"re":22938,"im":30339,"cl":571,"sp":29.38,"note":"Steady generic awareness performance."}]}}},{"id":"w20260824","label":"24 – 30 Aug 2026","mk":"aug","v":{"gym":{"r":2894,"re":144790,"im":208586,"cl":2863,"sp":202.28,"rt":"Profile Visits","ads":[{"n":"Classes – Aug 2026 (general)","r":1810,"re":84935,"im":127814,"cl":1795,"sp":130.66,"note":"Best Gym result this week. Classes reactivated with exceptional pv volume highest of the portfolio."},{"n":"PT – Aug 2026 (general)","r":606,"re":37532,"im":52514,"cl":601,"sp":40.99,"note":"Solid PT performance with consistent reach."},{"n":"Generic – Aug 2026 (general)","r":478,"re":22323,"im":28258,"cl":467,"sp":30.63,"note":"Steady generic awareness performance."}]}}},{"id":"w20260817","label":"17 – 23 Aug 2026","mk":"aug","v":{"gym":{"r":1142,"re":66921,"im":90959,"cl":1147,"sp":82.67,"rt":"Profile Visits","ads":[{"n":"PT – Aug 2026 (general)","r":642,"re":41918,"im":58659,"cl":642,"sp":47.43,"note":"Best Gym result this week. PT leading pv volume."},{"n":"Generic – Aug 2026 (general)","r":500,"re":25003,"im":32300,"cl":505,"sp":35.24,"note":"Consistent generic awareness performance."}]}}},{"id":"w20260810","label":"10 – 16 Aug 2026","mk":"aug","v":{"gym":{"r":1306,"re":61557,"im":87001,"cl":1308,"sp":86.45,"rt":"Profile Visits","ads":[{"n":"PT – Aug 2026 (general)","r":679,"re":40857,"im":58586,"cl":697,"sp":49.37,"note":"Best Gym result this week. PT with highest reach and pv volume."},{"n":"Generic – Aug 2026 (general)","r":627,"re":20700,"im":28415,"cl":611,"sp":37.08,"note":"Consistent generic awareness performance."}]}}},{"id":"w20260803","label":"03 – 09 Aug 2026","mk":"aug","v":{"gym":{"r":1216,"re":50251,"im":72640,"cl":1187,"sp":80.19,"rt":"Profile Visits","ads":[{"n":"PT – Aug 2026 (general)","r":597,"re":34074,"im":48915,"cl":610,"sp":45.42,"note":"Best Gym result this week. PT with highest reach and profile-visit volume."},{"n":"Generic – Aug 2026 (general)","r":619,"re":16177,"im":23725,"cl":577,"sp":34.77,"note":"Consistent generic awareness performance."}]}}},{"id":"w20260801","label":"01 – 02 Aug 2026","mk":"aug","v":{"gym":{"r":0,"re":0,"im":0,"cl":0,"sp":0,"rt":"Profile Visits","ads":[]}}},{"id":"w20260727","label":"27 – 31 Jul 2026","mk":"jul","v":{"gym":{"r":833,"re":37989,"im":51531,"cl":826,"sp":56.91,"rt":"Profile Visits","ads":[{"n":"Generic – Jul 2026 (general)","r":410,"re":11771,"im":16509,"cl":394,"sp":24.15,"note":"Steady generic close to July."},{"n":"PT – Jul 2026 (general)","r":423,"re":26218,"im":35022,"cl":432,"sp":32.76,"note":"Best Gym result this period. PT closing July with highest reach."}]}}},{"id":"w20260720","label":"20 – 26 Jul 2026","mk":"jul","v":{"gym":{"r":1266,"re":57050,"im":83283,"cl":1234,"sp":86.51,"rt":"Profile Visits","ads":[{"n":"Generic – Jul 2026 (general)","r":579,"re":18751,"im":28091,"cl":553,"sp":37.22,"note":"Consistent generic awareness performance."},{"n":"PT – Jul 2026 (general)","r":687,"re":38299,"im":55192,"cl":681,"sp":49.29,"note":"Best Gym result this week. Highest reach and profile-visit volume."}]}}},{"id":"w20260713","label":"13 – 19 Jul 2026","mk":"jul","v":{"gym":{"r":1423,"re":62155,"im":86101,"cl":1416,"sp":87.56,"rt":"Profile Visits","ads":[{"n":"Generic – Jul 2026 (general)","r":690,"re":22923,"im":30234,"cl":674,"sp":37.58,"note":"Strong generic awareness performance."},{"n":"PT – Jul 2026 (general)","r":733,"re":39232,"im":55867,"cl":742,"sp":49.98,"note":"Best Gym result this week. Highest reach and profile-visit volume."}]}}},{"id":"w20260706","label":"06 – 12 Jul 2026","mk":"jul","v":{"gym":{"r":1061,"re":44221,"im":61631,"cl":1041,"sp":66.07,"rt":"Profile Visits","ads":[{"n":"Classes – Jul 2026 (general)","r":26,"re":942,"im":985,"cl":23,"sp":1.36,"note":"Very low spend this week on the Classes activation."},{"n":"Generic – Jul 2026 (general)","r":533,"re":14526,"im":19890,"cl":517,"sp":27.87,"note":"Strong generic awareness with high profile-visit volume."},{"n":"PT – Jul 2026 (general)","r":502,"re":28753,"im":40756,"cl":501,"sp":36.84,"note":"Highest Gym reach this week. PT driving strong profile-visit volume."}]}}},{"id":"w20260701","label":"01 – 05 Jul 2026","mk":"jul","v":{"gym":{"r":1611,"re":49806,"im":66086,"cl":1594,"sp":85.3,"rt":"Profile Visits","ads":[{"n":"Classes – Jul 2026 (general)","r":671,"re":17209,"im":19712,"cl":666,"sp":31.16,"note":"Top Gym result this week. Classes driving highest profile-visit volume."},{"n":"Generic – Jul 2026 (general)","r":485,"re":11779,"im":16303,"cl":476,"sp":23.07,"note":"Consistent always-on generic performance."},{"n":"PT – Jul 2026 (general)","r":455,"re":20818,"im":30071,"cl":452,"sp":31.07,"note":"Highest Gym reach this week with the PT activation."}]}}},{"id":"w20260629","label":"29 – 30 Jun 2026","mk":"jun","v":{"gym":{"r":619,"re":47854,"im":49300,"cl":617,"sp":49.93,"rt":"Profile Visits","ads":[{"n":"PT – Jun 2026 (general)","r":146,"re":16496,"im":16798,"cl":149,"sp":12.47,"note":"Final 2 days of the June PT activation."},{"n":"Classes – Jun 2026 (general)","r":303,"re":16067,"im":16589,"cl":303,"sp":21.3,"note":"Best Gym result these 2 days. Classes closing June strongly."},{"n":"Generic – Jun 2026 (general)","r":170,"re":15291,"im":15913,"cl":165,"sp":16.16,"note":"Always-on generic closing out June."}]}}},{"id":"w20260622","label":"22 – 28 Jun 2026","mk":"jun","v":{"gym":{"r":4018,"re":165406,"im":229086,"cl":4027,"sp":254.09,"rt":"Profile Visits","ads":[{"n":"PT – Jun 2026 (general)","r":973,"re":53612,"im":84256,"cl":969,"sp":69.13,"note":"Lowest spend of the Gym set with strong profile-visit volume."},{"n":"Classes – Jun 2026 (general)","r":1840,"re":58419,"im":71119,"cl":1865,"sp":105.46,"note":"Top Gym result this week, highest profile-visit volume of the set."},{"n":"Generic – Jun 2026 (general)","r":1205,"re":53375,"im":73711,"cl":1193,"sp":79.5,"note":"Steady always-on performance, consistent with prior weeks."}]}}},{"id":"w20260615","label":"15 – 21 Jun 2026","mk":"jun","v":{"gym":{"r":2246,"re":77319,"im":100458,"cl":2209,"sp":118.81,"rt":"Profile Visits","ads":[{"n":"PT – Jun 2026 (general)","r":195,"re":6756,"im":8944,"cl":190,"sp":8.89,"note":"Exceptional efficiency lowest spend, strong profile-visit volume. Best cost-per-result in the portfolio."},{"n":"Classes – Jun 2026 (general)","r":1239,"re":39807,"im":48308,"cl":1235,"sp":62.74,"note":"Top Gym result this week. Classes campaign driving the highest profile-visit volume"},{"n":"Generic – Jun 2026 (general)","r":812,"re":30756,"im":43206,"cl":784,"sp":47.18,"note":"Strong always-on generic performance. High visit volume at efficient spend"}]}}},{"id":"w20260608","label":"08 – 14 Jun 2026","mk":"jun","v":{"gym":{"r":0,"re":0,"im":0,"cl":0,"sp":0,"rt":"Profile Visits","ads":[]}}},{"id":"w20260601","label":"01 – 07 Jun 2026","mk":"jun","v":{"gym":{"r":0,"re":0,"im":0,"cl":0,"sp":0,"rt":"Profile Visits","ads":[]}}},{"id":"w20260525","label":"25 – 31 May 2026","mk":"may","v":{"gym":{"r":1512,"re":67588,"im":102801,"cl":1503,"sp":91.18,"rt":"Profile Visits","ads":[{"n":"Generic","r":763,"re":51338,"im":82531,"cl":759,"sp":52.22,"note":"Broad gym awareness maintaining strong reach. Consistent profile visit volume."},{"n":"Classes","r":749,"re":16250,"im":20270,"cl":744,"sp":38.96,"note":"Near-perfect click-to-visit parity. Reliable week-over-week performer."}]}}},{"id":"w20260518","label":"18 – 24 May 2026","mk":"may","v":{"gym":{"r":1689,"re":69889,"im":102543,"cl":1634,"sp":95.29,"rt":"Profile Visits","ads":[{"n":"Generic","r":825,"re":51633,"im":80069,"cl":773,"sp":54,"note":"Broad gym awareness maintaining strong reach. Consistent profile visit volume."},{"n":"Classes","r":864,"re":18256,"im":22474,"cl":861,"sp":41.29,"note":"Classes near-perfect click-to-visit parity. Top gym performer"}]}}},{"id":"w20260511","label":"11 – 17 May 2026","mk":"may","v":{"gym":{"r":1892,"re":73591,"im":103766,"cl":1843,"sp":96.52,"rt":"Profile Visits","ads":[{"n":"Generic","r":895,"re":52631,"im":78745,"cl":857,"sp":55.14,"note":"Widest reach in account. Broad gym awareness delivering strong volume."},{"n":"Classes","r":997,"re":20960,"im":25021,"cl":986,"sp":41.38,"note":"Top gym performer this week. Near-perfect visit-to-click parity"}]}}},{"id":"w20260504","label":"04 – 10 May 2026","mk":"may","v":{"gym":{"r":1288,"re":50299,"im":65282,"cl":1244,"sp":66.9,"rt":"Profile Visits","ads":[{"n":"Generic","r":616,"re":35235,"im":45654,"cl":573,"sp":38.55,"note":"Broad gym awareness maintaining strong reach. Consistent profile visit volume."},{"n":"Classes","r":672,"re":15064,"im":19628,"cl":671,"sp":28.35,"note":"Near-perfect click-to-visit parity. Classes audience highly motivated"}]}}},{"id":"w20260501","label":"01 – 03 May 2026","mk":"may","v":{"gym":{"r":0,"re":0,"im":0,"cl":0,"sp":0,"rt":"Profile Visits","ads":[]}}},{"id":"w20260427","label":"27 – 30 Apr 2026","mk":"apr","v":{"gym":{"r":1488,"re":78766,"im":101722,"cl":1384,"sp":74.53,"rt":"Profile Visits","ads":[{"n":"PT","r":398,"re":15394,"im":19160,"cl":362,"sp":19.84,"note":"Efficient PT visits at low spend. Strong click-to-visit parity."},{"n":"Classes","r":510,"re":27192,"im":29070,"cl":492,"sp":23.11,"note":"Classes consistently top-performing in gym cluster."},{"n":"Generic","r":580,"re":36180,"im":53492,"cl":530,"sp":31.58,"note":"Broad awareness delivering volume. Healthy profile visit rate across wide audience."}]}}},{"id":"w20260420","label":"20 – 26 Apr 2026","mk":"apr","v":{"gym":{"r":2778,"re":137557,"im":212492,"cl":2682,"sp":142.76,"rt":"Profile Visits","ads":[{"n":"PT","r":680,"re":28868,"im":39533,"cl":648,"sp":38.66,"note":"Solid PT visit numbers. Consistent audience and efficient spend across April."},{"n":"Classes","r":984,"re":46767,"im":57355,"cl":961,"sp":44.89,"note":"Top performing gym ad this week. High visit-to-click parity"},{"n":"Generic","r":1114,"re":61922,"im":115604,"cl":1073,"sp":59.21,"note":"Widest reach in account. Broad awareness delivering strong volume."}]}}},{"id":"w20260413","label":"13 – 19 Apr 2026","mk":"apr","v":{"gym":{"r":3125,"re":157466,"im":247366,"cl":3042,"sp":143.62,"rt":"Profile Visits","ads":[{"n":"PT","r":799,"re":37113,"im":54860,"cl":779,"sp":39.49,"note":"Stable visit volume week-over-week. Personal training audience engaged"},{"n":"Classes","r":1067,"re":50385,"im":67820,"cl":1048,"sp":44.64,"note":"Top performer in the gym cluster. High visit and click parity"},{"n":"Generic","r":1259,"re":69968,"im":124686,"cl":1215,"sp":59.49,"note":"Widest reach in the account. Broad awareness campaign performing consistently."}]}}},{"id":"w20260406","label":"06 – 12 Apr 2026","mk":"apr","v":{"gym":{"r":2546,"re":131622,"im":197957,"cl":2486,"sp":118.91,"rt":"Profile Visits","ads":[{"n":"PT","r":653,"re":32014,"im":47910,"cl":635,"sp":31.97,"note":"Solid PT visit numbers. Consistent audience and efficient spend."},{"n":"Classes","r":914,"re":38110,"im":55427,"cl":896,"sp":37.3,"note":"Classes driving strong visit-to-click ratio. Gym audience responding well."},{"n":"Generic","r":979,"re":61498,"im":94620,"cl":955,"sp":49.64,"note":"Broad awareness holding volume. Healthy profile visit rate across wide audience."}]}}},{"id":"w20260401","label":"01 – 05 Apr 2026","mk":"apr","v":{"gym":{"r":0,"re":0,"im":0,"cl":0,"sp":0,"rt":"Profile Visits","ads":[]}}},{"id":"w3","label":"23 – 31 Mar 2026","mk":"mar","v":{"gym":{"r":1806,"re":84899,"im":107207,"cl":1711,"sp":75.57,"rt":"Profile Visits","ads":[{"n":"Generic","r":685,"re":44890,"im":59689,"cl":639,"sp":34.8,"note":"Best reach and volume in gym portfolio. Excellent visit-to-spend ratio"},{"n":"Classes","r":539,"re":23919,"im":27483,"cl":536,"sp":20.58,"note":"Highly efficient. Creative resonating well keep live and test new visuals next cycle."},{"n":"PT","r":582,"re":16090,"im":20035,"cl":536,"sp":20.19,"note":"Solid results at minimal spend. Narrow reach"}]}}},{"id":"w2","label":"16 – 22 Mar 2026","mk":"mar","v":{"gym":{"r":3162,"re":192899,"im":280331,"cl":3248,"sp":168.05,"rt":"Profile Visits","ads":[{"n":"Generic","r":1055,"re":63281,"im":99217,"cl":1044,"sp":61.66,"note":"Strong broad-reach performer. Highest volume in gym"},{"n":"Classes","r":903,"re":43300,"im":57815,"cl":934,"sp":38.13,"note":"Solid and consistent. Visit-to-click ratio excellent keep live and test new creatives."},{"n":"PT","r":776,"re":33309,"im":47637,"cl":804,"sp":38.02,"note":"Lean and efficient."},{"n":"Dietitian","r":428,"re":53009,"im":74948,"cl":466,"sp":30.24,"note":"Good reach for spend level."}]}}},{"id":"w1","label":"09 – 15 Mar 2026","mk":"mar","v":{"gym":{"r":3789,"re":218585,"im":345976,"cl":3855,"sp":193.15,"rt":"Profile Visits","ads":[{"n":"Generic","r":1069,"re":57745,"im":91078,"cl":1056,"sp":61.62,"note":"Widest reach in portfolio. Excellent volume-to-spend ratio"},{"n":"Classes","r":966,"re":46883,"im":65824,"cl":1004,"sp":38.64,"note":"Highly efficient. Low cost per visit prioritise keeping this live at all times."},{"n":"PT","r":863,"re":31790,"im":47637,"cl":875,"sp":38.82,"note":"Consistent with tight targeting. Good results test new PT offer creatives soon."},{"n":"Dietitian","r":891,"re":82167,"im":141437,"cl":920,"sp":54.07,"note":"Strongest reach-to-result ratio in gym this week. High potential"}]}}}];
+const DEF="w20261005";
+
+// Full Jan–Mar monthly spend from Overall Spent sheet + weekly uploads
+const MS={"gym":{"name":"For Gym","c":"#1e8449","months":{"jan":{"t":554.84,"w":[{"l":"12–18 Jan","a":"Generic, Classes, Dietitian, PT","s":189},{"l":"19–25 Jan","a":"Generic, Classes, Dietitian, PT","s":189},{"l":"26 Jan–01 Feb","a":"Generic, Classes, Dietitian, PT","s":176.84}]},"feb":{"t":574,"w":[{"l":"01–08 Feb","a":"Generic, Classes, PT","s":96},{"l":"09–15 Feb","a":"Generic, Classes, PT","s":141},{"l":"16–22 Feb","a":"Generic, Classes, PT","s":241},{"l":"23–28 Feb","a":"Generic, Classes, PT","s":96}]},"mar":{"t":600.77,"w":[{"l":"01–08 Mar","a":"Generic, Classes, Dietitian, PT","s":164},{"l":"09–15 Mar","a":"Generic, Classes, Dietitian, PT","s":193.15},{"l":"16–22 Mar","a":"Generic, Classes, Dietitian, PT","s":168.05},{"l":"23–31 Mar","a":"Generic, Classes, PT","s":75.57}]},"apr":{"t":479.82,"w":[{"l":"06–12 Apr","a":"Generic, Classes, PT","s":118.91},{"l":"13–19 Apr","a":"Generic, Classes, PT","s":143.62},{"l":"20–26 Apr","a":"Generic, Classes, PT","s":142.76},{"l":"27–30 Apr","a":"Generic, Classes, PT","s":74.53}]},"may":{"t":349.89,"w":[{"l":"04–10 May","a":"Generic, Classes","s":66.9},{"l":"11–17 May","a":"Generic, Classes","s":96.52},{"l":"18–24 May","a":"Generic, Classes","s":95.29},{"l":"25–31 May","a":"Generic, Classes","s":91.18}]},"jun":{"t":422.83,"w":[{"l":"15–21 Jun","a":"PT, Classes, Generic","s":118.81},{"l":"22–28 Jun","a":"PT, Classes, Generic","s":254.09},{"l":"29–30 Jun","a":"PT, Classes, Generic","s":49.93}]},"jul":{"t":382.35,"w":[{"l":"01–05 Jul","a":"Classes, Generic, PT","s":85.3},{"l":"06–12 Jul","a":"Classes, Generic, PT","s":66.07},{"l":"13–19 Jul","a":"Generic, PT","s":87.56},{"l":"20–26 Jul","a":"Generic, PT","s":86.51},{"l":"27–31 Jul","a":"Generic, PT","s":56.91}]},"aug":{"t":451.59,"w":[{"l":"01–02 Aug","a":"No spend","s":0},{"l":"03–09 Aug","a":"Generic, PT","s":80.19},{"l":"10–16 Aug","a":"Generic, PT","s":86.45},{"l":"17–23 Aug","a":"PT, Generic","s":82.67},{"l":"24–30 Aug","a":"Classes, PT, Generic","s":202.28}]},"sep":{"t":550.39,"w":[{"l":"01–06 Sep","a":"PT, Classes, Generic","s":110.89},{"l":"07–13 Sep","a":"PT, Classes, Generic","s":131.34},{"l":"14–20 Sep","a":"PT, Classes, Generic","s":129.12},{"l":"21–27 Sep","a":"Generic, Classes, PT","s":129.92},{"l":"28–30 Sep","a":"Generic, Classes","s":49.12}]},"oct":{"t":128.46,"w":[{"l":"01–04 Oct","a":"Generic, Classes","s":40.66},{"l":"05–11 Oct","a":"Generic, Classes","s":87.8}]}}}};
+const MNO=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct'];
+// All venues with spend data
+const MS_VENUES=[{"id":"gym","name":"For Gym","c":"#1e8449"}];
+const MNL={jan:'January 2026',feb:'February 2026',mar:'March 2026',apr:'April 2026',may:'May 2026',jun:'June 2026',jul:'July 2026',aug:'August 2026',sep:'September 2026',oct:'October 2026 (partial)'};
+
+const CAL=[
+  {m:'January',mk:'jan',wks:[{l:'01–04 Jan',id:null},{l:'05–11 Jan',id:null},{l:'12–18 Jan',id:null},{l:'19–25 Jan',id:null},{l:'26 Jan–01 Feb',id:null}]},
+  {m:'February',mk:'feb',wks:[{l:'02–08 Feb',id:null},{l:'09–15 Feb',id:null},{l:'16–22 Feb',id:null},{l:'23–28 Feb',id:null}]},
+  {m:'March',mk:'mar',wks:[{l:'01–08 Mar',id:null},{l:'09–15 Mar',id:'w1'},{l:'16–22 Mar',id:'w2'},{l:'23–31 Mar',id:'w3'}]},
+  {m:'April',mk:'apr',wks:[{l:'01–05 Apr',id:'w20260401'},{l:'06–12 Apr',id:'w20260406'},{l:'13–19 Apr',id:'w20260413'},{l:'20–26 Apr',id:'w20260420'},{l:'27–30 Apr',id:'w20260427'}]},
+  {m:'May',mk:'may',wks:[{l:'01–03 May',id:'w20260501'},{l:'04–10 May',id:'w20260504'},{l:'11–17 May',id:'w20260511'},{l:'18–24 May',id:'w20260518'},{l:'25–31 May',id:'w20260525'}]},
+  {m:'June',mk:'jun',wks:[{l:'01–07 Jun',id:'w20260601'},{l:'08–14 Jun',id:'w20260608'},{l:'15–21 Jun',id:'w20260615'},{l:'22–28 Jun',id:'w20260622'},{l:'29–30 Jun',id:'w20260629'}]},
+  {m:'July',mk:'jul',wks:[{l:'01–05 Jul',id:'w20260701'},{l:'06–12 Jul',id:'w20260706'},{l:'13–19 Jul',id:'w20260713'},{l:'20–26 Jul',id:'w20260720'},{l:'27–31 Jul',id:'w20260727'}]},
+  {m:'August',mk:'aug',wks:[{l:'01–02 Aug',id:'w20260801'},{l:'03–09 Aug',id:'w20260803'},{l:'10–16 Aug',id:'w20260810'},{l:'17–23 Aug',id:'w20260817'},{l:'24–30 Aug',id:'w20260824'}]},
+  {m:'September',mk:'sep',wks:[{l:'01–06 Sep',id:'w20260901'},{l:'07–13 Sep',id:'w20260907'},{l:'14–20 Sep',id:'w20260914'},{l:'21–27 Sep',id:'w20260921'},{l:'28–30 Sep',id:'w20260928'}]},
+  {m:'October',mk:'oct',wks:[{l:'01–04 Oct',id:'w20261001'},{l:'05–11 Oct',id:'w20261005'},{l:'12–18 Oct',id:null},{l:'19–25 Oct',id:null},{l:'26 Oct–01 Nov',id:null}]},
+  {m:'November',mk:null,wks:[{l:'02–08 Nov',id:null},{l:'09–15 Nov',id:null},{l:'16–22 Nov',id:null},{l:'23–29 Nov',id:null}]},
+  {m:'December',mk:null,wks:[{l:'07–13 Dec',id:null},{l:'14–20 Dec',id:null},{l:'21–27 Dec',id:null},{l:'28–31 Dec',id:null}]},
+];
+
+// helpers
+const fN=n=>(!n)?'—':Number(n).toLocaleString('en-US');
+const fK=n=>(!n)?'—':n>=1000?(n/1000).toFixed(1)+'K':String(n);
+const f$=(n,d=0)=>(!n)?'—':'$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const f2=n=>(!n)?'—':'$'+Number(n).toFixed(2);
+const pct=(a,b)=>(!b||b===0)?null:((a-b)/b*100);
+function chip(c,p,inv=false){const d=pct(c,p);if(d===null||(!c&&!p))return'<span class="chip neu">—</span>';const pos=inv?d<0:d>0;return`<span class="chip ${pos?'up':'dn'}">${d>0?'▲':'▼'} ${Math.abs(d).toFixed(1)}%</span>`;}
+function tdD(d,inv=false){if(d===null)return'<td class="tna">—</td>';const pos=inv?d<0:d>0;return`<td class="${pos?'tup':'tdn'}">${d>0?'▲':'▼'} ${Math.abs(d).toFixed(1)}%</td>`;}
+function mchip(d,inv=false){if(d===null)return'<span class="momchip neu">—</span>';const pos=inv?d<0:d>0;return`<span class="momchip ${pos?'up':'dn'}">${d>0?'▲':'▼'} ${Math.abs(d).toFixed(1)}%</span>`;}
+function aggW(wids,vid,k){return wids.reduce((a,wid)=>{const w=WK.find(x=>x.id===wid);return a+(w?.v[vid]?.[k]||0);},0);}
+function aggAll(wids,k){return V.reduce((a,v)=>a+aggW(wids,v.id,k),0);}
+function getAds(wids,vid){
+  const map={};
+  wids.forEach(wid=>{const w=WK.find(x=>x.id===wid);(w?.v[vid]?.ads||[]).forEach(a=>{if(!map[a.n])map[a.n]={...a,sp:0,r:0,pv:0,re:0,im:0,cl:0};map[a.n].sp+=a.sp||0;map[a.n].r+=a.r||0;map[a.n].pv+=a.pv||0;map[a.n].re+=a.re||0;map[a.n].im+=a.im||0;map[a.n].cl+=a.cl||0;});});
+  return Object.values(map);
+}
+// State
+let QSIDE=true,QV=false,DV=false,AV=false;
+let VIEW='gym',TAB='perf',SEL=[DEF],SEL_M=null,EXP={},SEX={};
+const sD=(vid,k)=>aggW(SEL,vid,k);
+const sAll=k=>aggAll(SEL,k);
+function sLbl(){
+  if(SEL_M){const mo=CAL.find(x=>x.mk===SEL_M);return mo?mo.m+' 2026':'Month';}
+  if(!SEL.length)return 'No period selected';
+  if(SEL.length===1){const w=WK.find(x=>x.id===SEL[0]);return w?w.label:'—';}
+  return SEL.length+' weeks selected';
+}
+
+// Calendar — only closes via button or outside click
+let calOpen=false;
+document.getElementById('cB').addEventListener('click',e=>{
+  e.stopPropagation();
+  calOpen=!calOpen;
+  document.getElementById('cD').classList.toggle('open',calOpen);
+  if(calOpen){const sel=document.querySelector('#cG .wsel');if(sel){const sc=document.querySelector('.cal-scroll');sc.scrollTop=Math.max(0,sel.offsetTop-sc.clientHeight/2);}}
+  document.getElementById('cA').classList.toggle('up',calOpen);
+});
+document.addEventListener('click',e=>{
+  if(!document.getElementById('cW').contains(e.target)){
+    if(calOpen){calOpen=false;document.getElementById('cD').classList.remove('open');document.getElementById('cA').classList.remove('up');}
+  }
+});
+document.getElementById('cW').addEventListener('click',e=>e.stopPropagation());
+
+function buildCal(){
+  document.getElementById('cG').innerHTML=CAL.map(mo=>{
+    const wD=mo.wks.filter(w=>w.id&&WK.find(x=>x.id===w.id));
+    const canM=mo.mk&&(wD.length>0||V.some(v=>MS[v.id]?.months?.[mo.mk]));
+    const mSel=SEL_M===mo.mk;
+    const mBtn=mo.mk?`<button class="cal-mbtn${mSel?' msel':''}" ${!canM?'disabled':''} onclick="pickM('${mo.mk}')">${mSel?'✓':''} Month</button>`:'';
+    const wBtns=mo.wks.map(wk=>{
+      const has=!!(wk.id&&WK.find(x=>x.id===wk.id));
+      const sel=SEL.includes(wk.id);
+      return`<button class="cal-wbtn${sel?' wsel':''}" ${!has?'disabled':''} ${has?`onclick="pickW('${wk.id}')"`:''}>${wk.l}</button>`;
+    }).join('');
+    return`<div class="cal-col"><div class="cal-mhd"><span class="cal-mname">${mo.m}</span>${mBtn}</div>${wBtns}</div>`;
+  }).join('');
+  const s=document.getElementById('cS');
+  if(SEL_M){const mo=CAL.find(x=>x.mk===SEL_M);s.textContent=(mo?.m||'Month')+' 2026 selected';}
+  else if(SEL.length){s.textContent=SEL.length+' week'+(SEL.length>1?'s':'')+' selected';}
+  else s.textContent='Nothing selected';
+  document.getElementById('cL').textContent=sLbl();
+}
+function pickW(wid){SEL_M=null;const i=SEL.indexOf(wid);if(i>=0)SEL.splice(i,1);else SEL.push(wid);if(!SEL.length)SEL=[DEF];EXP={};buildCal();render();}
+function pickM(mk){if(SEL_M===mk){SEL_M=null;SEL=[DEF];}else{SEL_M=mk;const mo=CAL.find(x=>x.mk===mk);SEL=mo?mo.wks.filter(w=>w.id&&WK.find(x=>x.id===w.id)).map(w=>w.id):[];}EXP={};buildCal();render();}
+function calReset(){SEL_M=null;SEL=[DEF];EXP={};buildCal();render();}
+
+function nav(id,el){VIEW=id;QV=false;DV=false;AV=false;EXP={};document.querySelectorAll('.sb-it').forEach(e=>e.classList.remove('on'));el.classList.add('on');const v=V.find(x=>x.id===id);document.getElementById('tbt').textContent=v?v.name+' — Performance':'All Venues — Overview';render();}
+function qnav(id,el){VIEW=id;QV=true;DV=false;AV=false;EXP={};document.querySelectorAll('.sb-it').forEach(e=>e.classList.remove('on'));el.classList.add('on');const v=V.find(x=>x.id===id);document.getElementById('tbt').textContent=v.name+' — Ads Quality';render();}
+function dnav(id,el){VIEW=id;QV=false;DV=true;AV=false;EXP={};document.querySelectorAll('.sb-it').forEach(e=>e.classList.remove('on'));el.classList.add('on');const v=V.find(x=>x.id===id);document.getElementById('tbt').textContent=v.name+' — Demographics';render();}
+function anav(id,el){VIEW=id;QV=false;DV=false;AV=true;EXP={};document.querySelectorAll('.sb-it').forEach(e=>e.classList.remove('on'));el.classList.add('on');const v=V.find(x=>x.id===id);document.getElementById('tbt').textContent=v.name+' — Account Insights';render();}
+function setTab(t,el){TAB=t;EXP={};document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));el.classList.add('on');render();}
+function togE(vid,e){e.stopPropagation();EXP[vid]=!EXP[vid];render();}
+function togSX(key,e){e.stopPropagation();SEX[key]=!SEX[key];render();}
+
+// PERFORMANCE
+function renderPerf(){
+  if(!SEL.length)return'<div class="nodata">Select a period from the calendar above.</div>';
+  const tS=sAll('sp'),tR=sAll('re'),tI=sAll('im'),tCl=sAll('cl'),tRs=sAll('r');
+  // Split results: Conv. Started (messaging) vs Profile Visits (IG profile visits) — tracked independently per venue
+  const sPV=(vid)=>WK.filter(w=>SEL.includes(w.id)).reduce((a,w)=>a+(w.v[vid]?.pv||0)+(vid==='gym'?(w.v[vid]?.r||0):0),0);
+  const tConv=V.filter(v=>v.id!=='gym'&&v.id!=='hr').reduce((a,v)=>a+aggW(SEL,v.id,'r'),0);
+  const tProf=V.reduce((a,v)=>a+sPV(v.id),0);
+  const tHR=aggW(SEL,'hr','cl');
+  const mS=Math.max(...V.map(v=>sD(v.id,'sp')),1),mR=Math.max(...V.map(v=>sD(v.id,'re')),1);
+  const sBars=V.map(v=>{const s=sD(v.id,'sp');return`<div class="brow"><div class="blbl">${v.name}</div><div class="btrack"><div class="bfill" style="width:${((s/mS)*100).toFixed(1)}%;background:${v.c}28;border-right:${s?3:1}px solid ${v.c}${s?'':'44'};"></div></div><div class="bnum" style="color:${s?v.c:'var(--t3)'};">${s?f$(s,0):'$0'}</div></div>`;}).join('');
+  const rBars=V.map(v=>{const r=sD(v.id,'re');return`<div class="brow"><div class="blbl">${v.name}</div><div class="btrack"><div class="bfill" style="width:${((r/mR)*100).toFixed(1)}%;background:${v.c}28;border-right:${r?3:1}px solid ${v.c}${r?'':'44'};"></div></div><div class="bnum" style="color:${r?v.c:'var(--t3)'};">${r?fK(r):'0'}</div></div>`;}).join('');
+  const trows=V.flatMap(v=>{
+    const s=sD(v.id,'sp'),r=sD(v.id,'re'),i=sD(v.id,'im'),cl=sD(v.id,'cl'),rs=sD(v.id,'r');
+    const pv=v.id==='gym'?rs:sPV(v.id);
+    const ads=getAds(SEL,v.id),isO=!!EXP[v.id];
+    const main=`<tr><td><span class="vc"><span class="vdot" style="background:${v.c};"></span>${v.name}</span></td><td>${s?f2(s):'$0'}</td><td>${r?fK(r):'0'}</td><td>${i?fN(i):'0'}</td><td>${cl?fN(cl):'0'}</td><td>${!['gym','hr'].includes(v.id)&&rs?fN(rs):'0'}</td><td>${pv?fN(pv):'0'}</td>
+      <td>${v.id==='hr'&&cl?fN(cl):'0'}</td>
+      <td style="text-align:center;padding:6px;">${ads.length?`<span class="tog${isO?' open':''}" onclick="togE('${v.id}',event)">${isO?'▲':'▼'}</span>`:'<span class="tna">—</span>'}</td></tr>`;
+    if(!isO||!ads.length)return[main];
+    const aR=ads.map(a=>`<tr class="ads-row"><td>${a.n}</td><td>${a.sp?f2(a.sp):'—'}</td><td>${a.re?fK(a.re):'—'}</td><td>${a.im?fN(a.im):'—'}</td><td>${a.cl?fN(a.cl):'—'}</td><td>${a.r?fN(a.r):(a.pv?fN(a.pv)+' <span style="color:var(--t3);font-size:10px;">(visits)</span>':'—')}</td><td style="text-align:left;white-space:normal;padding:7px 10px;">${a.note||''}</td></tr>`).join('');
+    return[main,aR];
+  }).join('');
+  return`<div>
+    <div class="kg" style="grid-template-columns:repeat(7,1fr);">
+      <div class="kc"><div class="kl">Amount Spent</div><div class="kv">${tS?f$(tS,0):'—'}</div><div class="ks">${sLbl()}</div></div>
+      <div class="kc"><div class="kl">Reach</div><div class="kv ${!tR?'na':''}">${tR?fK(tR):'—'}</div><div class="ks">Unique accounts</div></div>
+      <div class="kc"><div class="kl">Impressions</div><div class="kv ${!tI?'na':''}">${tI?fK(tI):'—'}</div><div class="ks">Total ad views</div></div>
+      <div class="kc"><div class="kl">Link Clicks</div><div class="kv ${!tCl?'na':''}">${tCl?fN(tCl):'—'}</div><div class="ks">All venues</div></div>
+      <div class="kc"><div class="kl">Conv. Started</div><div class="kv ${!tConv?'na':''}">${tConv?fN(tConv):'—'}</div><div class="ks">Messaging conversations</div></div>
+      <div class="kc"><div class="kl">Profile Visits</div><div class="kv ${!tProf?'na':''}">${tProf?fN(tProf):'—'}</div><div class="ks">Instagram profile visits</div></div>
+      <div class="kc"><div class="kl">HR Link Clicks</div><div class="kv ${!tHR?'na':''}">${tHR?fN(tHR):'—'}</div><div class="ks">Recruitment clicks</div></div>
+    </div>
+    <div class="g2">
+      <div class="panel"><div class="pttl">Amount Spent — by Venue</div><div class="bars">${sBars}</div></div>
+      <div class="panel"><div class="pttl">Reach — by Venue</div><div class="bars">${rBars}</div></div>
+    </div>
+    <div class="sec"><h2>All Venues — Performance Table</h2><span class="secn">▼ expand ad-set breakdown &amp; analysis</span></div>
+    <div class="panel" style="padding:0;overflow:hidden;margin-bottom:18px;">
+      <table class="dt">
+        <thead><tr><th style="text-align:left;min-width:130px;">Venue</th><th>Spent</th><th>Reach</th><th>Impressions</th><th>Link Clicks</th><th>Conv. Started</th><th>Profile Visits</th><th>HR Clicks</th><th class="thc"></th></tr></thead>
+        <tbody>${trows}</tbody>
+        <tfoot><tr><td>TOTALS</td><td>${tS?f2(tS):'—'}</td><td>${tR?fK(tR):'—'}</td><td>${tI?fK(tI):'—'}</td><td>${tCl?fN(tCl):'—'}</td><td>${tConv?fN(tConv):'—'}</td><td>${tProf?fN(tProf):'—'}</td><td>${tHR?fN(tHR):'—'}</td><td></td></tr></tfoot>
+      </table>
+    </div>
+    <div class="footer"><span>Period: ${sLbl()}</span><span>⚡ Addmind Beirut — Meta Ads</span></div>
+  </div>`;
+}
+
+// MONTHLY SPEND
+function renderSpend(){
+  const pt={};MS_VENUES.forEach(v=>{MNO.forEach(mk=>{if(!pt[mk])pt[mk]=0;pt[mk]+=(MS[v.id]?.months?.[mk]?.t||0);});});
+  const kpi=MNO.filter(mk=>pt[mk]>0).map(mk=>`<div class="kc"><div class="kl">Total — ${MNL[mk]}</div><div class="kv">$${Math.round(pt[mk]).toLocaleString()}</div><div class="ks">All active venues</div></div>`).join('');
+  const blocks=MNO.filter(mk=>pt[mk]>0).map(mk=>{
+    const maxV=Math.max(...MS_VENUES.map(v=>MS[v.id]?.months?.[mk]?.t||0),1);
+    const vrows=MS_VENUES.map(v=>{
+      const md=MS[v.id]?.months?.[mk];if(!md||!md.t)return'';
+      const key=`${v.id}_${mk}`,isO=!!SEX[key];
+      const wrows=isO&&md.w?.length?`<div class="swr-wrap">${md.w.map(w=>`<div class="swr"><div class="swr-lbl">${w.l}</div><div class="swr-acts">${w.a}</div><div class="swr-amt">$${Number(w.s).toFixed(0)}</div></div>`).join('')}</div>`:'';
+      return`<div><div class="svr"><span class="svr-dot" style="background:${v.c};"></span><span class="svr-name">${v.name}</span><div class="svr-bwrap"><div class="svr-bar" style="width:${((md.t/maxV)*100).toFixed(1)}%;background:${v.c}cc;"></div></div><span class="svr-amt">$${Math.round(md.t).toLocaleString()}</span><span class="svr-tog"><button class="${isO?'open':''}" onclick="togSX('${key}',event)">${isO?'▲':'▼'}</button></span></div>${wrows}</div>`;
+    }).join('');
+    return`<div class="spend-month-block"><div class="spend-month-hd"><span class="spend-month-name">${MNL[mk]}</span><span class="spend-month-total">$${Math.round(pt[mk]).toLocaleString()}</span></div>${vrows}</div>`;
+  }).join('');
+  return`<div><div class="kg" style="grid-template-columns:repeat(${MNO.filter(mk=>pt[mk]>0).length},1fr);">${kpi}</div>${blocks}<div class="footer"><span>Source: Overall Spent sheet + Meta weekly exports. Jun 2026 = full month (01–30 Jun). Jul 2026 = full month (01–31 Jul). Click ▼ to expand weekly breakdown.</span><span>⚡ Addmind Beirut</span></div></div>`;
+}
+
+// MOM
+function renderMoM(){
+  const tt={};MNO.forEach(mk=>{tt[mk]=MS_VENUES.reduce((a,v)=>a+(MS[v.id]?.months?.[mk]?.t||0),0);});
+  const dFJ=pct(tt.feb,tt.jan),dMF=pct(tt.mar,tt.feb),dAMom=pct(tt.apr,tt.mar),dMApr=pct(tt.may,tt.apr),dJM=pct(tt.jun,tt.may),dJlJ=pct(tt.jul,tt.jun),dAJl=pct(tt.aug,tt.jul),dSA=pct(tt.sep,tt.aug),dOS=pct(tt.oct,tt.sep);
+  const rows=V.flatMap(v=>{
+    const jan=MS[v.id]?.months?.jan?.t||0,feb=MS[v.id]?.months?.feb?.t||0,mar=MS[v.id]?.months?.mar?.t||0,apr=MS[v.id]?.months?.apr?.t||0,may=MS[v.id]?.months?.may?.t||0,jun=MS[v.id]?.months?.jun?.t||0,jul=MS[v.id]?.months?.jul?.t||0,aug=MS[v.id]?.months?.aug?.t||0,sep=MS[v.id]?.months?.sep?.t||0,oct=MS[v.id]?.months?.oct?.t||0;
+    if(!jan&&!feb&&!mar&&!apr&&!may&&!jun&&!jul&&!aug&&!sep&&!oct)return[];
+    const dFJ2=pct(feb,jan),dMF2=pct(mar,feb),dAM=pct(apr,mar),dMA=pct(may,apr),dJM2=pct(jun,may),dJlJ2=pct(jul,jun),dAJl2=pct(aug,jul),dSA2=pct(sep,aug),dOS2=pct(oct,sep),isO=!!EXP[v.id];
+    const am={};WK.filter(w=>w.mk==='oct').forEach(w=>{(w.v[v.id]?.ads||[]).forEach(a=>{if(!am[a.n])am[a.n]={sp:0};am[a.n].sp+=a.sp||0;});});
+    const ads=Object.entries(am);
+    const main=`<tr><td><span class="vc"><span class="vdot" style="background:${v.c};"></span>${v.name}</span></td><td>${jan?'$'+Math.round(jan).toLocaleString():'—'}</td><td>${feb?'$'+Math.round(feb).toLocaleString():'—'}</td>${tdD(dFJ2,true)}<td>${mar?'$'+Math.round(mar).toLocaleString():'—'}</td>${tdD(dMF2,true)}<td>${apr?'$'+Math.round(apr).toLocaleString():'—'}</td>${tdD(dAM,true)}<td>${may?'$'+Math.round(may).toLocaleString():'—'}</td>${tdD(dMA,true)}<td>${jun?'$'+Math.round(jun).toLocaleString():'—'}</td>${tdD(dJM2,true)}<td>${jul?'$'+Math.round(jul).toLocaleString():'—'}</td>${tdD(dJlJ2,true)}<td>${aug?'$'+Math.round(aug).toLocaleString():'—'}</td>${tdD(dAJl2,true)}<td>${sep?'$'+Math.round(sep).toLocaleString():'—'}</td>${tdD(dSA2,true)}<td>${oct?'$'+Math.round(oct).toLocaleString():'—'}</td>${tdD(dOS2,true)}<td style="text-align:center;padding:6px;">${ads.length?`<span class="tog${isO?' open':''}" onclick="togE('${v.id}',event)">${isO?'▲':'▼'}</span>`:'<span class="tna">—</span>'}</td></tr>`;
+    if(!isO||!ads.length)return[main];
+    const aR=ads.map(([n,d])=>`<tr class="ads-row"><td>${n}</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td class="tna">—</td><td>${d.sp?'$'+Math.round(d.sp):'—'} <span class="tna" style="font-size:9.5px;">Oct</span></td><td class="tna">—</td><td></td></tr>`).join('');
+    return[main,aR];
+  }).join('');
+  return`<div>
+    <div class="momgrid">
+      <div class="momcell"><div class="momlbl">January → February</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Jan 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${Math.round(tt.jan).toLocaleString()}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Feb 2026</div><div class="momval">$${Math.round(tt.feb).toLocaleString()}</div>${mchip(dFJ,true)}</div>
+      <div class="momcell"><div class="momlbl">February → March</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Feb 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${Math.round(tt.feb).toLocaleString()}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Mar 2026</div><div class="momval">$${Math.round(tt.mar).toLocaleString()}</div>${mchip(dMF,true)}</div>
+      <div class="momcell"><div class="momlbl">March → April</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Mar 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${Math.round(tt.mar).toLocaleString()}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Apr 2026</div><div class="momval">$${tt.apr?Math.round(tt.apr).toLocaleString():'—'}</div>${mchip(dAMom,true)}</div>
+      <div class="momcell"><div class="momlbl">April → May</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Apr 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${tt.apr?Math.round(tt.apr).toLocaleString():'—'}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">May 2026</div><div class="momval">$${tt.may?Math.round(tt.may).toLocaleString():'—'}</div>${mchip(dMApr,true)}</div>
+      <div class="momcell"><div class="momlbl">May → June</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">May 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${tt.may?Math.round(tt.may).toLocaleString():'—'}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Jun 2026</div><div class="momval">$${tt.jun?Math.round(tt.jun).toLocaleString():'—'}</div>${mchip(dJM,true)}</div>
+      <div class="momcell"><div class="momlbl">June → July</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Jun 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${tt.jun?Math.round(tt.jun).toLocaleString():'—'}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Jul 2026</div><div class="momval">$${tt.jul?Math.round(tt.jul).toLocaleString():'—'}</div>${mchip(dJlJ,true)}</div>
+      <div class="momcell"><div class="momlbl">July → August</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Jul 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${tt.jul?Math.round(tt.jul).toLocaleString():'—'}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Aug 2026</div><div class="momval">$${tt.aug?Math.round(tt.aug).toLocaleString():'—'}</div>${mchip(dAJl,true)}</div>
+      <div class="momcell"><div class="momlbl">August → September</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Aug 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${tt.aug?Math.round(tt.aug).toLocaleString():'—'}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Sep 2026</div><div class="momval">$${tt.sep?Math.round(tt.sep).toLocaleString():'—'}</div>${mchip(dSA,true)}</div>
+      <div class="momcell"><div class="momlbl">September → October</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Sep 2026</div><div style="font-size:18px;font-weight:600;color:var(--t3);margin-bottom:8px;">$${tt.sep?Math.round(tt.sep).toLocaleString():'—'}</div><div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Oct 2026 (partial)</div><div class="momval">$${tt.oct?Math.round(tt.oct).toLocaleString():'—'}</div>${mchip(dOS,true)}</div>
+    </div>
+    <div class="sec"><h2>Month-over-Month — Spend per Venue</h2><span class="secn">▼ expand Oct ad-set breakdown</span></div>
+    <div class="panel" style="padding:0;overflow:hidden;margin-bottom:18px;">
+      <table class="dt">
+        <thead><tr><th style="text-align:left;min-width:110px;">Venue</th><th>Jan</th><th>Feb</th><th>Jan→Feb</th><th>Mar</th><th>Feb→Mar</th><th>Apr</th><th>Mar→Apr</th><th>May</th><th>Apr→May</th><th>Jun</th><th>May→Jun</th><th>Jul</th><th>Jun→Jul</th><th>Aug</th><th>Jul→Aug</th><th>Sep</th><th>Aug→Sep</th><th>Oct ⚡</th><th>Sep→Oct</th><th class="thc"></th></tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr><td>PORTFOLIO</td><td>$${Math.round(tt.jan).toLocaleString()}</td><td>$${Math.round(tt.feb).toLocaleString()}</td><td><span class="${dFJ<0?'tup':'tdn'}">${dFJ>0?'▲':'▼'} ${Math.abs(dFJ).toFixed(1)}%</span></td><td>$${Math.round(tt.mar).toLocaleString()}</td><td><span class="${dMF<0?'tup':'tdn'}">${dMF>0?'▲':'▼'} ${Math.abs(dMF).toFixed(1)}%</span></td><td>$${tt.apr?Math.round(tt.apr).toLocaleString():'—'}</td><td>${tt.apr?`<span class="${dAMom<0?'tup':'tdn'}">${dAMom>0?'▲':'▼'} ${Math.abs(dAMom).toFixed(1)}%</span>`:'—'}</td><td>$${tt.may?Math.round(tt.may).toLocaleString():'—'}</td><td>${tt.may?`<span class="${dMApr<0?'tup':'tdn'}">${dMApr>0?'▲':'▼'} ${Math.abs(dMApr).toFixed(1)}%</span>`:'—'}</td><td>$${tt.jun?Math.round(tt.jun).toLocaleString():'—'}</td><td>${tt.jun?`<span class="${dJM<0?'tup':'tdn'}">${dJM>0?'▲':'▼'} ${Math.abs(dJM).toFixed(1)}%</span>`:'—'}</td><td>$${tt.jul?Math.round(tt.jul).toLocaleString():'—'}</td><td>${tt.jul?`<span class="${dJlJ<0?'tup':'tdn'}">${dJlJ>0?'▲':'▼'} ${Math.abs(dJlJ).toFixed(1)}%</span>`:'—'}</td><td>$${tt.aug?Math.round(tt.aug).toLocaleString():'—'}</td><td>${tt.aug?`<span class="${dAJl<0?'tup':'tdn'}">${dAJl>0?'▲':'▼'} ${Math.abs(dAJl).toFixed(1)}%</span>`:'—'}</td><td>$${tt.sep?Math.round(tt.sep).toLocaleString():'—'}</td><td>${tt.sep&&tt.aug?`<span class="${dSA<0?'tup':'tdn'}">${dSA>0?'▲':'▼'} ${Math.abs(dSA).toFixed(1)}%</span>`:'—'}</td><td></td></tr></tfoot>
+      </table>
+    </div>
+    <div class="footer"><span>Aug 2026 = full month (01–30 Aug). Sep 2026 = week 1 only (01–06 Sep) — partial, not comparable to full months.</span><span>⚡ Addmind Beirut — MoM</span></div>
+  </div>`;
+}
+
+// ALL WEEKS
+function renderHist(){
+  const mx=[{k:'sp',l:'Spent ($)',f:v=>v?f$(v,0):'—'},{k:'re',l:'Reach',f:v=>v?fK(v):'—'},{k:'im',l:'Impressions',f:v=>v?fK(v):'—'},{k:'cl',l:'Link Clicks',f:v=>v?fN(v):'—'},{k:'r',l:'Results',f:v=>v?fN(v):'—'}];
+  const tR=mx.map(m=>{const c=WK.map(w=>`<td style="font-weight:600;">${m.f(V.reduce((a,v)=>a+(w.v[v.id]?.[m.k]||0),0))}</td>`).join('');return`<tr><td style="color:var(--t2);">${m.l}</td>${c}</tr>`;}).join('');
+  const vS=V.map(v=>{const rows=mx.map(m=>{const c=WK.map(w=>`<td>${m.f(w.v[v.id]?.[m.k]||0)}</td>`).join('');return`<tr><td style="color:var(--t2);font-size:12px;">${m.l}</td>${c}</tr>`;}).join('');return`<div style="margin-bottom:18px;"><div style="display:flex;align-items:center;gap:8px;padding:8px 0 7px;"><span class="vdot" style="background:${v.c};width:9px;height:9px;flex-shrink:0;"></span><span style="font-size:13.5px;font-weight:600;">${v.name}</span></div><table class="dt" style="font-size:12.5px;"><thead><tr><th style="text-align:left;width:115px;">Metric</th>${WK.map(w=>`<th>${w.label}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;}).join('');
+  return`<div><div class="infobox"><strong>All Weeks Archive.</strong> Every uploaded week is stored here. Use the 📅 calendar to select any combination of weeks or full months for aggregated views.</div><div class="sec"><h2>Portfolio Totals</h2></div><div class="panel" style="padding:0;overflow:hidden;margin-bottom:18px;"><table class="dt" style="font-size:12.5px;"><thead><tr><th style="text-align:left;width:115px;">Metric</th>${WK.map(w=>`<th>${w.label}</th>`).join('')}</tr></thead><tbody>${tR}</tbody></table></div><div class="sec"><h2>Per Venue</h2></div>${vS}<div class="footer"><span>⚡ Addmind Beirut — Weekly Archive</span></div></div>`;
+}
+
+// SINGLE VENUE
+function renderVenue(id){
+  const v=V.find(x=>x.id===id),vd=MS[id];
+  const init=v.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const s=sD(id,'sp'),r=sD(id,'re'),i=sD(id,'im'),cl=sD(id,'cl'),rBase=sD(id,'r'),pvBase=sD(id,'pv');
+  const rs=rBase||pvBase;
+  const rt=WK.find(x=>x.id===SEL[0])?.v[id]?.rt||'—';
+  const ads=getAds(SEL,id),hasD=s>0||r>0;
+  const fd=[{n:'Reach',val:r,a:'dd'},{n:'Impressions',val:i,a:'bb'},{n:'Link Clicks',val:cl,a:'88'},{n:'Results',val:rs,a:'55'}];
+  const fmax=Math.max(...fd.map(f=>f.val),1);
+  const funnel=fd.map(f=>`<div class="fnrow"><div class="fnlbl">${f.n}</div><div class="fnbar" style="width:${f.val?Math.max((f.val/fmax*100),5).toFixed(0):2}%;background:${f.val?v.c+f.a:'var(--border)'};"></div><div class="fnval" style="color:${f.val?'inherit':'var(--t3)'};">${f.val?fK(f.val):'0'}</div></div>`).join('');
+  // Show only months matching selected period — strictly no bleed from other months
+  const selMKs=SEL_M?[SEL_M]:[...new Set(SEL.map(wid=>{const w=WK.find(x=>x.id===wid);return w?.mk||null;}).filter(Boolean))];
+  const mV=selMKs.map(mk=>({mk,l:{jan:'Jan',feb:'Feb',mar:'Mar',apr:'Apr',may:'May',jun:'Jun',jul:'Jul',aug:'Aug',sep:'Sep',oct:'Oct',nov:'Nov',dec:'Dec'}[mk],val:vd?.months?.[mk]?.t||0}));
+  const mMax=Math.max(...mV.map(x=>x.val),1);
+  const pttlSpend=mV.length===1?`${mV[0].l} 2026 Spend`:`Spend — ${sLbl()}`;
+  const mBars=mV.map(({l,val})=>{const h=val?Math.max((val/mMax*86),4).toFixed(0):4;return`<div class="mcol"><div class="mval" style="color:${val?v.c:'var(--t3)'};">${val?'$'+Math.round(val).toLocaleString():'$0'}</div><div class="mbar" style="height:${h}px;background:${val?v.c+'cc':'var(--border)'};"></div><div class="mlbl">${l} 2026</div></div>`;}).join('');
+  // Weekly history: only show selected weeks
+  const selWKs=WK.filter(w=>SEL.includes(w.id));
+  const hR=[['Spent','sp',v=>v?f$(v,0):'$0'],['Reach','re',v=>v?fK(v):'0'],['Impressions','im',v=>v?fK(v):'0'],['Link Clicks','cl',v=>v?fN(v):'0'],['Results','r',v=>v?fN(v):'0']].map(([l,k,f])=>`<tr><td style="color:var(--t2);">${l}</td>${selWKs.map(w=>`<td>${f(k==='r'?((w.v[id]?.r)||(w.v[id]?.pv)||0):(w.v[id]?.[k]||0))}</td>`).join('')}</tr>`).join('');
+  const adSec=ads.length?`<div class="sec"><h2>Ad-Set Breakdown &amp; Analysis</h2><span class="secn">${sLbl()}</span></div>
+    <div class="panel" style="padding:0;overflow:hidden;margin-bottom:18px;"><table class="dt"><thead><tr><th style="text-align:left;">Ad Set</th><th>Spent</th><th>Reach</th><th>Impressions</th><th>Link Clicks</th><th>Results</th><th class="tha">Analysis</th></tr></thead>
+    <tbody>${ads.map(a=>`<tr><td style="color:var(--t2);">${a.n}</td><td>${a.sp?f2(a.sp):'—'}</td><td>${a.re?fK(a.re):'—'}</td><td>${a.im?fN(a.im):'—'}</td><td>${a.cl?fN(a.cl):'—'}</td><td>${a.r?fN(a.r)+(rt==='Calls'?' <span style="color:var(--t3);font-size:10px;">(calls)</span>':''):(a.pv?fN(a.pv)+' <span style="color:var(--t3);font-size:10px;">(visits)</span>':'—')}</td><td style="text-align:left;white-space:normal;padding:8px 10px;">${a.note||''}</td></tr>`).join('')}</tbody>
+    <tfoot><tr><td>TOTAL</td><td>${f2(s)}</td><td>${fK(r)}</td><td>${fN(i)}</td><td>${fN(cl)}</td><td>${fN(rs)}</td><td></td></tr></tfoot></table></div>`:'';
+  // AD QUALITY (Meta quality ranking per ad, with its ad set / activation)
+  const qHas=WK.some(w=>(w.v[id]?.qa||[]).length);
+  const qRows=[];selWKs.forEach(w=>{(w.v[id]?.qa||[]).forEach(x=>qRows.push({...x,wl:w.label}));});
+  const qMulti=new Set(qRows.map(x=>x.wl)).size>1;
+  const qFmt=q=>{if(!q||q==='-')return'<span style="color:var(--t3);">—</span>';const p=q.split(' – ');return`<span class="qtag">${p[0]}</span>${p[1]?`<span class="qsub">${p[1]}</span>`:''}`;};
+  const qExt=qRows.some(x=>x.sp!=null&&x.cl!=null);
+  const qCols=qExt?9:4;
+  const qd=(n,f)=>n==null?'—':f(n);
+  const q3=qRows.some(x=>x.cl&&x.sp!=null&&x.sp/x.cl<0.1);
+  const q$=n=>'$'+n.toFixed(q3?3:2);
+  const qGroupRows=()=>{let o='',lastW=null,lastS=null;qRows.forEach(x=>{
+    if(qMulti&&x.wl!==lastW){o+=`<tr class="qwk"><td colspan="${qCols}">${x.wl}</td></tr>`;lastW=x.wl;lastS=null;}
+    if(x.s!==lastS){o+=`<tr class="qas"><td colspan="${qCols}">${x.s}</td></tr>`;lastS=x.s;}
+    const ext=qExt?`<td>${x.sp!=null?'$'+x.sp.toFixed(2):'—'}</td><td>${x.im?fN(x.im):'—'}</td><td>${x.cl?fN(x.cl):'—'}</td><td>${x.cl&&x.im?(x.cl/x.im*100).toFixed(2)+'%':'—'}</td><td>${x.cl&&x.sp!=null?q$(x.sp/x.cl):'—'}</td><td>${x.im&&x.sp!=null?'$'+(x.sp/x.im*1000).toFixed(2):'—'}</td><td>${x.r?fN(x.r):'—'}</td>`:`<td>${x.im?fN(x.im):'—'}</td><td>${x.r?fN(x.r):'—'}</td>`;
+    o+=`<tr><td style="text-align:left;padding-left:22px;">${x.n}</td><td style="text-align:left;">${qFmt(x.q)}</td>${ext}</tr>`;});return o;};
+  const qSec=qHas?`<div class="sec"><h2>Ad Quality</h2><span class="secn">${sLbl()}</span></div>
+    <div class="panel" style="padding:0;overflow:hidden;margin-bottom:18px;">${qRows.length?`<table class="dt"><thead><tr><th style="text-align:left;">Ad</th><th style="text-align:left;">Quality Ranking</th>${qExt?`<th>Spent</th><th>Impressions</th><th>Link Clicks</th><th>CTR</th><th>CPC</th><th>CPM</th>`:'<th>Impressions</th>'}<th>${(['Calls','Profile Visits'].includes(rt)?rt:'Results')}</th></tr></thead>
+    <tbody>${qGroupRows()}</tbody></table>
+    <div class="qleg"><div class="qlh">How to read the ranking</div>
+      <div class="qlr"><b>Above Average</b><span>Scored in the top 45% of ads.</span></div>
+      <div class="qlr"><b>Average</b><span>Scored between the 35th and 55th percentile.</span></div>
+      <div class="qlr"><b>Below Average (Bottom 35% of ads)</b><span>Performing worse than the majority of competing ads.</span></div>
+      <div class="qlr"><b>Below Average (Bottom 20% of ads)</b><span>Significant negative user feedback or low-quality attributes detected.</span></div>
+      <div class="qlr"><b>Below Average (Bottom 10% of ads)</b><span>Severe creative or post-click issues causing high user dissatisfaction.</span></div>
+      <div class="qlh" style="margin-top:14px;">Why an ad can rank Below Average</div>
+      <div class="qlr"><b>Negative feedback</b><span>People hide the ad, report it, or choose “I don’t want to see this”. This is what drives the Bottom 20% and Bottom 10% rankings.</span></div>
+      <div class="qlr"><b>Strong competition</b><span>Other ads for the same audience are simply rated better, since the ranking is relative.</span></div>
+      <div class="qlh" style="margin-top:14px;">Why some ads show “—”</div>
+      <div class="qlp">Quality ranking compares each ad with other ads competing for the same audience, using Meta's own data. Meta only shows a ranking once an ad has gathered enough delivery in the selected period (a minimum of 500 impressions) and has enough comparable ads to be measured against. Ads with low delivery, or whose audience has too few comparable ads, are left unranked. Meta does not publish the exact reason for each ad, so “—” means no ranking was provided, not that the ad performed badly.</div>
+    </div></div>`:'<div class="qnote" style="border-top:none;">No quality ranking data available for this period.</div>'}</div>`:'';
+  // DEMOGRAPHICS (age & gender, from Meta breakdowns)
+  const dHas=WK.some(w=>w.v[id]?.dm);
+  const dWks=selWKs.filter(w=>w.v[id]?.dm);
+  const dK=n=>n>=1000?(n/1000).toPrecision(3)+'K':String(n);
+  const dPanel=(title,rows,col)=>{const tI=rows.reduce((a,x)=>a+x.im,0),tR=rows.reduce((a,x)=>a+x.re,0),mx=Math.max(...rows.map(x=>x.im),1);
+    return`<div class="panel" style="padding:16px 18px;"><div class="pttl">${title}</div>
+    <div class="dmh"><span></span><span>Impressions</span><span>Share</span><span>Reach</span></div>
+    ${rows.map(x=>`<div class="dmr"><div class="dml">${x.g}</div><div class="dmb"><i style="width:${Math.max(x.im/mx*100,1.5).toFixed(1)}%;background:${col};"></i><b>${dK(x.im)}</b></div><div class="dms">${(x.im/tI*100).toFixed(1)}%</div><div class="dmv">${dK(x.re)}</div></div>`).join('')}</div>`;};
+  const dBlock=w=>{const d=w.v[id].dm;const top=(rows)=>rows.reduce((a,x)=>x.im>a.im?x:a,rows[0]);const tI=d.gen.reduce((a,x)=>a+x.im,0),g=top(d.gen),ag=top(d.age),aI=d.age.reduce((a,x)=>a+x.im,0);
+    return`${dWks.length>1?`<div class="sec"><h2>${w.label}</h2></div>`:''}<div class="dmsum"><b>${g.g}</b> accounts for ${(g.im/tI*100).toFixed(0)}% of impressions · <b>${ag.g}</b> is the largest age group (${(ag.im/aI*100).toFixed(0)}% of impressions)</div>
+    <div class="g2">${dPanel('Age',d.age,v.c+'cc')}${dPanel('Gender',d.gen,v.c+'99')}</div>`;};
+  const dSec=dHas?`<div class="sec"><h2>Audience Demographics</h2><span class="secn">${sLbl()}</span></div>${dWks.length?dWks.map(dBlock).join(''):'<div class="panel"><div class="qnote" style="border-top:none;">No demographic data available for this period.</div></div>'}
+    <div class="qnote" style="border:1px solid var(--border);border-radius:8px;margin-bottom:18px;">Source: Meta Ads Manager age and gender breakdowns, rounded as reported by Meta. Reach counts each person once across all ad sets, so it is lower than the sum of ad-set reach on the Performance page.</div>`:'';
+  // ACCOUNT INSIGHTS (Meta Business Suite account-level numbers)
+  const aHas=WK.some(w=>w.v[id]?.ai);
+  const aWks=selWKs.filter(w=>w.v[id]?.ai);
+  const aBlock=w=>{const x=w.v[id].ai;const c=(l,v,sub)=>`<div class="kc"><div class="kl">${l}</div><div class="kv">${v}</div><div class="ks">${sub}</div></div>`;
+    return`${aWks.length>1?`<div class="sec"><h2>${w.label}</h2></div>`:''}<div class="kg" style="grid-template-columns:repeat(4,1fr);">${c('Views',x.views,`Instagram ${x.ig} · Facebook ${x.fb}`)}${c('Content Interactions',x.ci,'Total interactions')}${c('Instagram Profile Visits',x.pv,'Profile visits')}${c('Instagram Follows',x.fo,'New follows')}</div>`;};
+  const aSec=aHas?`<div class="sec"><h2>Account Insights</h2><span class="secn">${sLbl()}</span></div>${aWks.length?aWks.map(aBlock).join(''):'<div class="panel"><div class="qnote" style="border-top:none;">No account insights available for this period.</div></div>'}`:'';
+  if(QSIDE&&AV)return`<div>
+    <div class="bhd"><div class="bicon" style="background:${v.c};">${init}</div><div class="bname">${v.name} — Account Insights</div><span class="bpill">📅 ${sLbl()}</span></div>
+    ${aSec||'<div class="nodata">No account insights available.</div>'}
+    <div class="footer"><span>Period: ${sLbl()}</span><span>⚡ Addmind Beirut · ${v.name}</span></div>
+  </div>`;
+  if(QSIDE&&DV)return`<div>
+    <div class="bhd"><div class="bicon" style="background:${v.c};">${init}</div><div class="bname">${v.name} — Demographics</div><span class="bpill">📅 ${sLbl()}</span></div>
+    ${dSec||'<div class="nodata">No demographic data available.</div>'}
+    <div class="footer"><span>Period: ${sLbl()}</span><span>⚡ Addmind Beirut · ${v.name}</span></div>
+  </div>`;
+  if(QSIDE&&QV)return`<div>
+    <div class="bhd"><div class="bicon" style="background:${v.c};">${init}</div><div class="bname">${v.name} — Ads Quality</div><span class="bpill">📅 ${sLbl()}</span></div>
+    ${qSec||'<div class="nodata">No quality ranking data available.</div>'}
+    <div class="footer"><span>Period: ${sLbl()}</span><span>⚡ Addmind Beirut · ${v.name}</span></div>
+  </div>`;
+  return`<div>
+    <div class="bhd"><div class="bicon" style="background:${v.c};">${init}</div><div class="bname">${v.name}</div><span class="bpill">📅 ${sLbl()}</span>${!hasD?'<span class="ndpill">No active ads this period</span>':''}</div>
+    <div class="kg" style="grid-template-columns:repeat(5,1fr);">
+      <div class="kc"><div class="kl">Amount Spent</div><div class="kv ${!s?'na':''}">${s?f2(s):'$0'}</div><div class="ks">Period total</div></div>
+      <div class="kc"><div class="kl">Reach</div><div class="kv ${!r?'na':''}">${r?fK(r):'0'}</div><div class="ks">Unique accounts</div></div>
+      <div class="kc"><div class="kl">Impressions</div><div class="kv ${!i?'na':''}">${i?fN(i):'0'}</div><div class="ks">Total ad views</div></div>
+      <div class="kc"><div class="kl">Link Clicks</div><div class="kv ${!cl?'na':''}">${cl?fN(cl):'0'}</div><div class="ks">All ad sets</div></div>
+      <div class="kc"><div class="kl">Results</div><div class="kv ${!rs?'na':''}">${rs?fN(rs):'0'}</div><div class="ks">${rt}</div></div>
+    </div>
+    <div class="g2"><div class="panel"><div class="pttl">Audience Funnel</div><div class="funnel">${funnel}</div></div><div class="panel"><div class="pttl">${pttlSpend}</div><div class="mwrap" style="height:${mV.length===1?'80px':'100px'}">${mBars}</div></div></div>
+    ${adSec}
+    ${QSIDE?'':qSec}
+    ${QSIDE?'':dSec}
+    ${QSIDE?'':aSec}
+    ${selWKs.length>1?`<div class="sec"><h2>Weekly Breakdown</h2></div><div class="panel" style="padding:0;overflow:hidden;margin-bottom:18px;"><table class="dt" style="font-size:12.5px;"><thead><tr><th style="text-align:left;width:115px;">Metric</th>${selWKs.map(w=>`<th>${w.label}</th>`).join('')}</tr></thead><tbody>${hR}</tbody></table></div>`:''}
+    <div class="footer"><span>Period: ${sLbl()}</span><span>⚡ Addmind Beirut · ${v.name}</span></div>
+  </div>`;
+}
+
+function render(){
+  let h='';
+  if(VIEW==='all'){if(TAB==='perf')h=renderPerf();else if(TAB==='spend')h=renderSpend();else if(TAB==='mom')h=renderMoM();else h=renderHist();}
+  else h=renderVenue(VIEW);
+  document.getElementById('cnt').innerHTML=h;
+}
+buildCal();render();
+</script>
+</body>
+</html>
